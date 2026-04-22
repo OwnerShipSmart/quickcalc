@@ -8,9 +8,9 @@
   <meta name="theme-color" content="#1e232c" />
   <meta name="description" content="QuickCalc calculator app" />
 
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="icon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="icon.svg" />
+<link rel="manifest" href="/quickcalc/manifest.json" />
+<link rel="icon" href="/quickcalc/icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/quickcalc/icon.svg" />
 
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="QuickCalc" />
@@ -542,7 +542,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch(() => {});
+navigator.serviceWorker.register("/quickcalc/sw.js", { scope: "/quickcalc/" }).catch(() => {});
       });
     }
   </script>

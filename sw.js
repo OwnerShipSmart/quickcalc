@@ -1,9 +1,9 @@
-const CACHE_NAME = "quickcalc-v1";
+const CACHE_NAME = "quickcalc-v2";
 const ASSETS = [
-  "./",
-  "./quickcalc.html",
-  "./manifest.json",
-  "./icon.svg"
+  "/quickcalc/",
+  "/quickcalc/index.html",
+  "/quickcalc/manifest.json",
+  "/quickcalc/icon.svg"
 ];
 
 self.addEventListener("install", (event) => {

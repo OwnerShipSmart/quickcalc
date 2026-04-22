@@ -1,13 +1,14 @@
 {
   "name": "QuickCalc",
   "short_name": "QuickCalc",
-  "start_url": "./quickcalc.html",
+  "start_url": "/quickcalc/",
+  "scope": "/quickcalc/",
   "display": "standalone",
   "background_color": "#1e232c",
   "theme_color": "#1e232c",
   "icons": [
     {
-      "src": "icon.svg",
+      "src": "/quickcalc/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
