@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>QuickCalc</title>
+  <meta name="theme-color" content="#1e232c" />
+  <meta name="description" content="QuickCalc calculator app" />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="QuickCalc" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0f1115, #1b1f27);
+      font-family: Arial, Helvetica, sans-serif;
+      color: white;
+      padding: 20px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 360px;
+      background: #1e232c;
+      border-radius: 22px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .topbar {
+      padding: 14px 18px 6px;
+      font-size: 13px;
+      color: #9aa3b2;
+      text-align: right;
+    }
+
+    .screen {
+      padding: 10px 18px 18px;
+    }
+
+    #display {
+      width: 100%;
+      height: 74px;
+      border: none;
+      outline: none;
+      border-radius: 16px;
+      background: #11151b;
+      color: #ffffff;
+      font-size: 34px;
+      text-align: right;
+      padding: 14px 16px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 0 18px 20px;
+    }
+
+    button {
+      border: none;
+      border-radius: 16px;
+      height: 58px;
+      font-size: 20px;
+      cursor: pointer;
+      background: #2b3240;
+      color: white;
+      transition: transform 0.08s ease, background 0.15s ease;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .op { background: #3b4557; }
+    .eq { background: #4c8dff; }
+    .wide { grid-column: span 2; }
+
+    #vaultScreen {
+      display: none;
+      padding: 18px;
+      background: #1c2129;
+    }
+
+    .vault-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .vault-title {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .mini-lock {
+      width: auto;
+      height: auto;
+      padding: 10px 14px;
+      font-size: 14px;
+      border-radius: 12px;
+      background: #a33c4a;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .tab-btn {
+      height: 42px;
+      font-size: 14px;
+      border-radius: 12px;
+      background: #2a313d;
+    }
+
+    .tab-btn.active {
+      background: #4c8dff;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .panel-subtitle {
+      font-size: 13px;
+      color: #aeb7c5;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    textarea, input {
+      width: 100%;
+      border: none;
+      outline: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 15px;
+      background: #10141a;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    textarea {
+      min-height: 180px;
+      resize: vertical;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .save-btn { background: #35a86b; }
+    .secondary-btn { background: #4b5568; }
+
+    .contact-card {
+      background: #10141a;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .contact-name {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .contact-phone {
+      font-size: 14px;
+      color: #aeb7c5;
+      margin-bottom: 10px;
+      word-break: break-word;
+    }
+
+    .contact-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .small-btn {
+      height: 42px;
+      font-size: 14px;
+      border-radius: 12px;
+    }
+
+    .call-btn { background: #35a86b; }
+    .text-btn { background: #4c8dff; }
+
+    .help-box {
+      background: #10141a;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .help-label {
+      font-size: 13px;
+      color: #aeb7c5;
+      margin-bottom: 8px;
+    }
+
+    .help-message {
+      font-size: 15px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      color: white;
+    }
+
+    .status {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #aeb7c5;
+      min-height: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div id="calcScreen">
+      <div class="topbar">QuickCalc</div>
+      <div class="screen">
+        <input id="display" type="text" readonly />
+      </div>
+
+      <div class="buttons">
+        <button class="op" onclick="clearDisplay()">C</button>
+        <button class="op" onclick="backspace()">⌫</button>
+        <button class="op" onclick="press('%')">%</button>
+        <button class="op" onclick="press('/')">÷</button>
+
+        <button onclick="press('7')">7</button>
+        <button onclick="press('8')">8</button>
+        <button onclick="press('9')">9</button>
+        <button class="op" onclick="press('*')">×</button>
+
+        <button onclick="press('4')">4</button>
+        <button onclick="press('5')">5</button>
+        <button onclick="press('6')">6</button>
+        <button class="op" onclick="press('-')">−</button>
+
+        <button onclick="press('1')">1</button>
+        <button onclick="press('2')">2</button>
+        <button onclick="press('3')">3</button>
+        <button class="op" onclick="press('+')">+</button>
+
+        <button class="wide" onclick="press('0')">0</button>
+        <button onclick="press('.')">.</button>
+        <button class="eq" onclick="calculate()">=</button>
+      </div>
+    </div>
+
+    <div id="vaultScreen">
+      <div class="vault-header">
+        <div class="vault-title">Private Space</div>
+        <button class="mini-lock" onclick="lockVault()">Lock</button>
+      </div>
+
+      <div class="tabs">
+        <button id="tabNotesBtn" class="tab-btn active" onclick="showTab('notes')">Notes</button>
+        <button id="tabContactsBtn" class="tab-btn" onclick="showTab('contacts')">Contacts</button>
+        <button id="tabHelpBtn" class="tab-btn" onclick="showTab('help')">Help</button>
+      </div>
+
+      <div id="tabNotes" class="tab-panel active">
+        <div class="panel-subtitle">Save quick notes on this device in this browser.</div>
+        <textarea id="vaultNotes" placeholder="Write anything here..."></textarea>
+        <div class="action-row">
+          <button class="save-btn" onclick="saveNotes()">Save Notes</button>
+          <button class="secondary-btn" onclick="clearNotes()">Clear</button>
+        </div>
+      </div>
+
+      <div id="tabContacts" class="tab-panel">
+        <div class="panel-subtitle">Save trusted contacts for one-tap call or text actions.</div>
+
+        <input id="contactName" type="text" placeholder="Contact name" />
+        <input id="contactPhone" type="text" placeholder="Phone number" />
+
+        <div class="action-row">
+          <button class="save-btn" onclick="saveContact()">Save Contact</button>
+          <button class="secondary-btn" onclick="clearContactFields()">Clear</button>
+        </div>
+
+        <div id="contactsList"></div>
+      </div>
+
+      <div id="tabHelp" class="tab-panel">
+        <div class="panel-subtitle">Create a message you can quickly copy and send.</div>
+
+        <textarea id="helpMessageInput" placeholder="Example: I need help. Please call me now and contact police if you cannot reach me."></textarea>
+
+        <div class="action-row">
+          <button class="save-btn" onclick="saveHelpMessage()">Save Message</button>
+          <button class="secondary-btn" onclick="copyHelpMessage()">Copy Message</button>
+        </div>
+
+        <div class="help-box">
+          <div class="help-label">Saved emergency message</div>
+          <div class="help-message" id="savedHelpMessage">No message saved yet.</div>
+        </div>
+      </div>
+
+      <div class="status" id="statusMsg"></div>
+    </div>
+  </div>
+
+  <script>
+    let input = "";
+    const secretCode = "713";
+
+    const display = document.getElementById("display");
+    const calcScreen = document.getElementById("calcScreen");
+    const vaultScreen = document.getElementById("vaultScreen");
+    const vaultNotes = document.getElementById("vaultNotes");
+    const statusMsg = document.getElementById("statusMsg");
+
+    const contactName = document.getElementById("contactName");
+    const contactPhone = document.getElementById("contactPhone");
+    const contactsList = document.getElementById("contactsList");
+
+    const helpMessageInput = document.getElementById("helpMessageInput");
+    const savedHelpMessage = document.getElementById("savedHelpMessage");
+
+    function press(value) {
+      input += value;
+      display.value = input;
+    }
+
+    function clearDisplay() {
+      input = "";
+      display.value = "";
+    }
+
+    function backspace() {
+      input = input.slice(0, -1);
+      display.value = input;
+    }
+
+    function calculate() {
+      if (input === secretCode) {
+        openVault();
+        return;
+      }
+
+      try {
+        const sanitized = input.replace(/÷/g, "/").replace(/×/g, "*");
+        const result = eval(sanitized);
+        input = String(result);
+        display.value = input;
+      } catch (error) {
+        display.value = "Error";
+        input = "";
+      }
+    }
+
+    function openVault() {
+      loadNotes();
+      loadContacts();
+      loadHelpMessage();
+      showTab("notes");
+      calcScreen.style.display = "none";
+      vaultScreen.style.display = "block";
+      clearDisplay();
+      setStatus("");
+    }
+
+    function lockVault() {
+      vaultScreen.style.display = "none";
+      calcScreen.style.display = "block";
+      clearDisplay();
+      setStatus("");
+    }
+
+    function showTab(tabName) {
+      const tabs = ["notes", "contacts", "help"];
+
+      tabs.forEach(tab => {
+        document.getElementById("tab" + capitalize(tab)).classList.remove("active");
+        document.getElementById("tab" + capitalize(tab) + "Btn").classList.remove("active");
+      });
+
+      document.getElementById("tab" + capitalize(tabName)).classList.add("active");
+      document.getElementById("tab" + capitalize(tabName) + "Btn").classList.add("active");
+      setStatus("");
+    }
+
+    function capitalize(word) {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }
+
+    function setStatus(message) {
+      statusMsg.textContent = message;
+    }
+
+    function saveNotes() {
+      localStorage.setItem("quickcalc_notes", vaultNotes.value);
+      setStatus("Notes saved.");
+    }
+
+    function loadNotes() {
+      vaultNotes.value = localStorage.getItem("quickcalc_notes") || "";
+    }
+
+    function clearNotes() {
+      vaultNotes.value = "";
+      localStorage.removeItem("quickcalc_notes");
+      setStatus("Notes cleared.");
+    }
+
+    function saveContact() {
+      const name = contactName.value.trim();
+      const phone = contactPhone.value.trim();
+
+      if (!name || !phone) {
+        setStatus("Enter a name and phone number.");
+        return;
+      }
+
+      const contacts = JSON.parse(localStorage.getItem("quickcalc_contacts") || "[]");
+      contacts.push({ name, phone });
+      localStorage.setItem("quickcalc_contacts", JSON.stringify(contacts));
+
+      contactName.value = "";
+      contactPhone.value = "";
+      loadContacts();
+      setStatus("Contact saved.");
+    }
+
+    function loadContacts() {
+      const contacts = JSON.parse(localStorage.getItem("quickcalc_contacts") || "[]");
+      contactsList.innerHTML = "";
+
+      if (contacts.length === 0) {
+        contactsList.innerHTML = '<div class="panel-subtitle">No contacts saved yet.</div>';
+        return;
+      }
+
+      contacts.forEach((contact, index) => {
+        const card = document.createElement("div");
+        card.className = "contact-card";
+
+        card.innerHTML = `
+          <div class="contact-name">${escapeHtml(contact.name)}</div>
+          <div class="contact-phone">${escapeHtml(contact.phone)}</div>
+          <div class="contact-actions">
+            <button class="small-btn call-btn" onclick="callContact('${escapeAttr(contact.phone)}')">Call</button>
+            <button class="small-btn text-btn" onclick="textContact('${escapeAttr(contact.phone)}')">Text</button>
+          </div>
+          <div style="margin-top:10px;">
+            <button class="small-btn secondary-btn" style="width:100%;" onclick="deleteContact(${index})">Delete</button>
+          </div>
+        `;
+
+        contactsList.appendChild(card);
+      });
+    }
+
+    function clearContactFields() {
+      contactName.value = "";
+      contactPhone.value = "";
+      setStatus("");
+    }
+
+    function deleteContact(index) {
+      const contacts = JSON.parse(localStorage.getItem("quickcalc_contacts") || "[]");
+      contacts.splice(index, 1);
+      localStorage.setItem("quickcalc_contacts", JSON.stringify(contacts));
+      loadContacts();
+      setStatus("Contact deleted.");
+    }
+
+    function callContact(phone) {
+      window.location.href = "tel:" + phone;
+    }
+
+    function textContact(phone) {
+      window.location.href = "sms:" + phone;
+    }
+
+    function saveHelpMessage() {
+      const message = helpMessageInput.value.trim();
+      localStorage.setItem("quickcalc_help_message", message);
+      loadHelpMessage();
+      setStatus("Help message saved.");
+    }
+
+    function loadHelpMessage() {
+      const message = localStorage.getItem("quickcalc_help_message") || "";
+      helpMessageInput.value = message;
+      savedHelpMessage.textContent = message || "No message saved yet.";
+    }
+
+    function copyHelpMessage() {
+      const message = localStorage.getItem("quickcalc_help_message") || helpMessageInput.value.trim();
+
+      if (!message) {
+        setStatus("No help message to copy.");
+        return;
+      }
+
+      navigator.clipboard.writeText(message)
+        .then(() => setStatus("Help message copied."))
+        .catch(() => setStatus("Could not copy message."));
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function escapeAttr(str) {
+      return str
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'");
+    }
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
