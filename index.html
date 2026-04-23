@@ -408,9 +408,9 @@
     }
 
     function showTab(tabName) {
-      const tabs = ["notes", "contacts", "help"];
-
-      tabs.forEach(tab => {
+	const tabs = ["notes", "contacts", "help", "photos"];
+     
+ tabs.forEach(tab => {
         document.getElementById("tab" + capitalize(tab)).classList.remove("active");
         document.getElementById("tab" + capitalize(tab) + "Btn").classList.remove("active");
       });
