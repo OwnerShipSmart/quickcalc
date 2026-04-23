@@ -1,4 +1,4 @@
-const CACHE_NAME = "quickcalc-v2";
+const CACHE_NAME = "quickcalc-v3";
 const ASSETS = [
   "/quickcalc/",
   "/quickcalc/index.html",
@@ -30,6 +30,8 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    })
   );
 });
