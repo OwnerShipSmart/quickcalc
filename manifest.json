@@ -1,7 +1,7 @@
 {
   "name": "QuickCalc",
   "short_name": "QuickCalc",
-  "start_url": "/quickcalc/",
+  "start_url": "/quickcalc/index.html",
   "scope": "/quickcalc/",
   "display": "standalone",
   "background_color": "#1e232c",
