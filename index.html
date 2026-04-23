@@ -561,6 +561,14 @@ navigator.serviceWorker.register("/quickcalc/sw.js", { scope: "/quickcalc/" }).c
     }
 <script>
 <script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/quickcalc/sw.js", { scope: "/quickcalc/" })
+      .catch(() => {});
+  });
+}
+
 function savePhotos() {
   const input = document.getElementById("photoUpload");
   const files = input.files;
@@ -612,10 +620,7 @@ function clearPhotos() {
   }
 }
 
-// load photos on open
 document.addEventListener("DOMContentLoaded", renderPhotos);
 </script>
-</script>
-  </script>
 </body>
 </html>
